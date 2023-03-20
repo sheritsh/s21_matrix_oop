@@ -158,4 +158,4 @@ And you also need to overload the following operators, partly corresponding to t
 - Provide a Makefile for building the library and tests (with targets all, clean, test, s21_matrix_oop.a)
 
 
-💡 [Tap here](https://forms.yandex.ru/u/635a7ff102848f1806c579e3/) **to leave your feedback on the project**. Pedago Team really tries to make your educational experience better.
+💡 [Tap here](https://forms.yandex.ru/cloud/64181a0deb614624afcee6b5/) **to leave your feedback on the project**. Pedago Team really tries to make your educational experience better.
