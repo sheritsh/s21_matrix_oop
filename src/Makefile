@@ -21,7 +21,7 @@ $(TARGET): $(OBJECTS)
 	@ar rcs $(TARGET) $(wildcard obj/*.o)
 
 test: $(TARGET)
-	@$(CC) $(CFLAGS) $(wildcard tests/*.c) $(TEST_FLAGS) $(TARGET) -o ./tests/$(TEST_TARGET)
+	@$(CC) $(CFLAGS) $(wildcard tests/*.cc) $(TEST_FLAGS) $(TARGET) -o ./tests/$(TEST_TARGET)
 	@./tests/$(TEST_TARGET)
 
 gcov_report: $(TARGET)
@@ -59,4 +59,4 @@ clean:
 	@echo "Deleting unnecessary files..."
 	@rm -rf obj *.a tests/$(TEST_TARGET) *.dSYM **/*.dSYM *.log **/*.log report test_coverage.info
 
-.PHONY: all build rebuild test valgrind clean
+.PHONY: all build rebuild test gcov_report style_check format_style valgrind clean
