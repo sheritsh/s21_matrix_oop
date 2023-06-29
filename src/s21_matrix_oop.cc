@@ -16,7 +16,7 @@ S21Matrix::S21Matrix(int rows, int cols) : rows_(rows), cols_(cols) {
 S21Matrix::S21Matrix(const S21Matrix& other)
     : rows_(other.rows_), cols_(other.cols_) {
   AllocateMemory();
-  std::memcpy(matrix_, other.matrix_, rows_ + rows_ * cols_);
+  std::memcpy(matrix_ + rows_, other.matrix_ + rows_, rows_ * cols_);
 }
 
 S21Matrix::S21Matrix(S21Matrix&& other) noexcept
@@ -34,7 +34,7 @@ S21Matrix& S21Matrix::operator=(const S21Matrix& other) {
     rows_ = other.rows_;
     cols_ = other.cols_;
     AllocateMemory();
-    std::memcpy(matrix_, other.matrix_, rows_ + rows_ * cols_);
+    std::memcpy(matrix_ + rows_, other.matrix_ + rows_, rows_ * cols_);
   }
 
   return *this;
@@ -77,11 +77,7 @@ S21Matrix& S21Matrix::operator*=(double num) {
 
 // DESTRUCTOR
 
-S21Matrix::~S21Matrix() {
-  FreeMemory();
-  rows_ = 0;
-  cols_ = 0;
-}
+S21Matrix::~S21Matrix() { FreeMemory(); }
 
 // GETTERS AND SETTERS
 
@@ -149,11 +145,7 @@ S21Matrix S21Matrix::operator*(double num) const {
   return res_matrix;
 }
 
-S21Matrix operator*(double num, S21Matrix& matrix) {
-  S21Matrix res(matrix);
-  res.MulNumber(num);
-  return res;
-}
+S21Matrix operator*(double num, S21Matrix& matrix) { return matrix * num; }
 
 bool S21Matrix::operator==(const S21Matrix& other) { return EqMatrix(other); }
 
@@ -165,7 +157,7 @@ double& S21Matrix::operator()(int row, int col) {
   return matrix_[row][col];
 }
 
-double S21Matrix::operator()(int row, int col) const {
+double& S21Matrix::operator()(int row, int col) const {
   if (row < 0 || col < 0 || row >= rows_ || col >= cols_) {
     throw std::out_of_range("InvalidIndexError: Index is out of range");
   }
@@ -176,9 +168,9 @@ double S21Matrix::operator()(int row, int col) const {
 // MEMBER FUNCTIONS
 
 bool S21Matrix::EqMatrix(const S21Matrix& other) {
-  return std::memcmp(matrix_, other.matrix_, rows_ + rows_ * cols_) == 0
-             ? true
-             : false;
+  return std::memcmp(matrix_ + rows_, other.matrix_ + rows_, rows_ * cols_) ==
+             0 &&
+         IsMatrixSameDimension(other);
 }
 
 void S21Matrix::SumMatrix(const S21Matrix& other) {
@@ -251,12 +243,16 @@ S21Matrix S21Matrix::CalcComplements() {
   }
 
   S21Matrix res_matrix(rows_, cols_);
-  for (int i = 0; i < rows_; i++) {
-    int sign = i % 2 == 0 ? 1 : -1;
-    for (int j = 0; j < cols_; j++) {
-      S21Matrix minor(Minor(i, j));
-      res_matrix.matrix_[i][j] = sign * minor.Determinant();
-      sign = -sign;
+  if (rows_ == 1) {
+    res_matrix.matrix_[0][0] = matrix_[0][0];
+  } else {
+    for (int i = 0; i < rows_; i++) {
+      int sign = i % 2 == 0 ? 1 : -1;
+      for (int j = 0; j < cols_; j++) {
+        S21Matrix minor(Minor(i, j));
+        res_matrix.matrix_[i][j] = sign * minor.Determinant();
+        sign = -sign;
+      }
     }
   }
 
@@ -315,6 +311,7 @@ void S21Matrix::AllocateMemory() {
   for (int i = 0; i < iteration_limit; i++) {
     matrix_[i] = start + i * cols_;
   }
+  std::memset(start, 0, rows_ * cols_);
 }
 
 void S21Matrix::FreeMemory() {

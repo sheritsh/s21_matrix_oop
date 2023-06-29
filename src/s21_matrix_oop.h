@@ -1,13 +1,11 @@
 
 //  created by sheritsh // Oleg Polovinko ※ School 21, Kzn
-#ifndef S21_MATRIX_OOP_H_
-#define S21_MATRIX_OOP_H_
+#ifndef CPP1_S21_MATRIXPLUS_SRC_S21_MATRIX_OOP_H_
+#define CPP1_S21_MATRIXPLUS_SRC_S21_MATRIX_OOP_H_
 
 #include <cmath>
 #include <cstring>
 #include <iostream>
-
-constexpr double EPS = 1e-7;
 
 namespace s_21 {
 class S21Matrix {
@@ -48,7 +46,7 @@ class S21Matrix {
   friend S21Matrix operator*(double, S21Matrix& matrix);
   bool operator==(const S21Matrix& other);
   double& operator()(int row, int col);
-  double operator()(int row, int col) const;
+  double& operator()(int row, int col) const;
 
   // Member functions
 
@@ -75,4 +73,4 @@ class S21Matrix {
 };
 }  // namespace s_21
 
-#endif  // S21_MATRIX_OOP_H_
+#endif  // CPP1_S21_MATRIXPLUS_SRC_S21_MATRIX_OOP_H_
