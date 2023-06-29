@@ -15,13 +15,13 @@ rebuild: clean $(TARGET)
 
 %.o: %.cc
 	@mkdir -p obj
-	@$(CC) -c $(CFLAGS) $< -o $(patsubst %, obj%, $@)
+	@$(CC) -c $(CFLAGS) $< -o ./obj/$@
 
 $(TARGET): $(OBJECTS)
 	@ar rcs $(TARGET) $(wildcard obj/*.o)
 
 test: $(TARGET)
-	@$(CC) $(CFLAGS) $(wildcard tests/*.cc) $(TEST_FLAGS) $(TARGET) -o ./tests/$(TEST_TARGET)
+	@$(CC) $(CFLAGS) ./tests/*.cc $(TEST_FLAGS) $(TARGET) -o ./tests/$(TEST_TARGET)
 	@./tests/$(TEST_TARGET)
 
 gcov_report: $(TARGET)
@@ -57,6 +57,6 @@ valgrind: test
 
 clean:
 	@echo "Deleting unnecessary files..."
-	@rm -rf obj *.a tests/$(TEST_TARGET) *.dSYM **/*.dSYM *.log **/*.log report test_coverage.info
+	@rm -rf obj *.a *.o tests/$(TEST_TARGET) *.dSYM **/*.dSYM *.log **/*.log report test_coverage.info
 
 .PHONY: all build rebuild test gcov_report style_check format_style valgrind clean

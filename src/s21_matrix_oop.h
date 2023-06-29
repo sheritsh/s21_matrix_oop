@@ -34,10 +34,10 @@ class S21Matrix {
 
   // Getters and setters
 
-  int getRows() const;
-  int getCols() const;
-  void setRows(int rows);
-  void setCols(int cols);
+  int GetRows() const;
+  int GetCols() const;
+  void SetRows(int rows);
+  void SetCols(int cols);
 
   // Overload operators
 
@@ -45,6 +45,7 @@ class S21Matrix {
   S21Matrix operator-(const S21Matrix& other);
   S21Matrix operator*(const S21Matrix& other);
   S21Matrix operator*(double num) const;
+  friend S21Matrix operator*(double, S21Matrix& matrix);
   bool operator==(const S21Matrix& other);
   double& operator()(int row, int col);
   double operator()(int row, int col) const;
@@ -52,10 +53,6 @@ class S21Matrix {
   // Member functions
 
   bool EqMatrix(const S21Matrix& other);
-  /**
-   * @brief sum of two matrices
-   * @throw different matrix dimensions
-   */
   void SumMatrix(const S21Matrix& other);
   void SubMatrix(const S21Matrix& other);
   void MulNumber(const double num);
@@ -69,10 +66,12 @@ class S21Matrix {
  private:
   int rows_, cols_;
   double** matrix_;
-  S21Matrix Minor(int ex_row, int ex_col);
+
   void AllocateMemory();
   void FreeMemory();
-  bool IsMatrixSameDimension(S21Matrix first_matrix, S21Matrix second_matrix);
+  S21Matrix Minor(int ex_row, int ex_col);
+  bool IsMatrixSameDimension(S21Matrix matrix);
+  bool IsMatrixSquare();
 };
 }  // namespace s_21
 
