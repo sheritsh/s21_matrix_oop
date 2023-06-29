@@ -7,21 +7,22 @@
 
 constexpr double EPS = 1e-7;
 
-namespace s21 {
+namespace s_21 {
 class S21Matrix {
  public:
   // Constructors
   S21Matrix();
   S21Matrix(int rows, int cols);
   S21Matrix(const S21Matrix& other);
-  S21Matrix(S21Matrix&& other);
+  S21Matrix(S21Matrix&& other) noexcept;
 
   // Assignment operators
-  S21Matrix& operator=(const S21Matrix& other);
+  S21Matrix& operator=(const S21Matrix& other) noexcept;
   S21Matrix& operator+=(const S21Matrix& other);
   S21Matrix& operator-=(const S21Matrix& other);
   S21Matrix& operator*=(const S21Matrix& other);
   S21Matrix& operator*=(double num);
+
   // Destructor
   ~S21Matrix();
 
@@ -40,6 +41,10 @@ class S21Matrix {
 
   // Member functions
   bool EqMatrix(const S21Matrix& other);
+  /**
+   * @brief sum of two matrices
+   * @throw different matrix dimensions
+   */
   void SumMatrix(const S21Matrix& other);
   void SubMatrix(const S21Matrix& other);
   void MulNumber(const double num);
@@ -54,7 +59,9 @@ class S21Matrix {
   int rows_, cols_;
   double** matrix_;
   S21Matrix Minor(int ex_row, int ex_col);
+  void AllocateMemory();
+  void FreeMemory();
 };
-}  // namespace s21
+}  // namespace s_21
 
 #endif  // S21_MATRIX_OOP_H_
