@@ -7,7 +7,7 @@ S21Matrix::S21Matrix() : S21Matrix(5, 5){};
 
 S21Matrix::S21Matrix(int rows, int cols) : rows_(rows), cols_(cols) {
   if (rows <= 0 || cols <= 0) {
-    throw std::out_of_range(
+    throw std::invalid_argument(
         "CreationError: The number of rows or cols cannot be less than 1");
   }
   AllocateMemory();
@@ -16,7 +16,7 @@ S21Matrix::S21Matrix(int rows, int cols) : rows_(rows), cols_(cols) {
 S21Matrix::S21Matrix(const S21Matrix& other)
     : rows_(other.rows_), cols_(other.cols_) {
   AllocateMemory();
-  std::memcpy(matrix_ + rows_, other.matrix_ + rows_, rows_ * cols_);
+  CopyValues(other);
 }
 
 S21Matrix::S21Matrix(S21Matrix&& other) noexcept
@@ -34,7 +34,7 @@ S21Matrix& S21Matrix::operator=(const S21Matrix& other) {
     rows_ = other.rows_;
     cols_ = other.cols_;
     AllocateMemory();
-    std::memcpy(matrix_ + rows_, other.matrix_ + rows_, rows_ * cols_);
+    CopyValues(other);
   }
 
   return *this;
@@ -70,7 +70,7 @@ S21Matrix& S21Matrix::operator*=(const S21Matrix& other) {
   return *this;
 }
 
-S21Matrix& S21Matrix::operator*=(double num) {
+S21Matrix& S21Matrix::operator*=(const double num) {
   MulNumber(num);
   return *this;
 }
@@ -87,7 +87,7 @@ int S21Matrix::GetCols() const { return cols_; }
 
 void S21Matrix::SetRows(int rows) {
   if (rows <= 0) {
-    throw std::out_of_range(
+    throw std::invalid_argument(
         "SettingRowsError: The number of rows cannot be less than 1");
   }
 
@@ -104,7 +104,7 @@ void S21Matrix::SetRows(int rows) {
 
 void S21Matrix::SetCols(int cols) {
   if (cols <= 0) {
-    throw std::out_of_range(
+    throw std::invalid_argument(
         "SettingColsError: The number of cols cannot be less than 1");
   }
 
@@ -175,7 +175,7 @@ bool S21Matrix::EqMatrix(const S21Matrix& other) {
 
 void S21Matrix::SumMatrix(const S21Matrix& other) {
   if (!IsMatrixSameDimension(other)) {
-    throw std::out_of_range("SumMatrixError: Matrices of different dimensions");
+    throw std::range_error("SumMatrixError: Matrices of different dimensions");
   }
 
   for (int i = 0; i < rows_; i++) {
@@ -187,7 +187,7 @@ void S21Matrix::SumMatrix(const S21Matrix& other) {
 
 void S21Matrix::SubMatrix(const S21Matrix& other) {
   if (!IsMatrixSameDimension(other)) {
-    throw std::out_of_range("SubMatrixError: Matrices of different dimensions");
+    throw std::range_error("SubMatrixError: Matrices of different dimensions");
   }
 
   for (int i = 0; i < rows_; i++) {
@@ -207,8 +207,8 @@ void S21Matrix::MulNumber(const double num) {
 
 void S21Matrix::MulMatrix(const S21Matrix& other) {
   if (cols_ != other.rows_) {
-    throw std::invalid_argument(
-        "MultMatrixError: Incorrect dimensions to multiply two matrices");
+    throw std::range_error(
+        "MulMatrixError: Incorrect dimensions to multiply two matrices");
   }
 
   S21Matrix res_matrix(rows_, other.cols_);
@@ -221,6 +221,7 @@ void S21Matrix::MulMatrix(const S21Matrix& other) {
       res_matrix.matrix_[i][j] = sum;
     }
   }
+
   *this = res_matrix;
 }
 
@@ -238,8 +239,7 @@ S21Matrix S21Matrix::Transpose() {
 
 S21Matrix S21Matrix::CalcComplements() {
   if (!IsMatrixSquare()) {
-    throw std::invalid_argument(
-        "CalcComplementsError: The matrix must be square");
+    throw std::range_error("CalcComplementsError: The matrix must be square");
   }
 
   S21Matrix res_matrix(rows_, cols_);
@@ -261,7 +261,7 @@ S21Matrix S21Matrix::CalcComplements() {
 
 double S21Matrix::Determinant() {
   if (!IsMatrixSquare()) {
-    throw std::invalid_argument("DeterminantError: The matrix must be square");
+    throw std::range_error("DeterminantError: The matrix must be square");
   }
 
   double det = 0;
@@ -284,8 +284,8 @@ double S21Matrix::Determinant() {
 S21Matrix S21Matrix::InverseMatrix() {
   double det = Determinant();
   if (!Determinant() || !IsMatrixSquare()) {
-    throw std::out_of_range(
-        "InverseError: Incompatible matrix sizes to search inverse matrix.");
+    throw std::range_error(
+        "InverseError: Incompatible matrix sizes to search inverse matrix");
   }
 
   S21Matrix res_matrix(rows_, cols_);
@@ -317,6 +317,14 @@ void S21Matrix::AllocateMemory() {
 void S21Matrix::FreeMemory() {
   if (matrix_) {
     delete[] matrix_;
+  }
+}
+
+void S21Matrix::CopyValues(const S21Matrix& other) {
+  for (int i = 0; i < rows_; i++) {
+    for (int j = 0; j < cols_; j++) {
+      matrix_[i][j] = other.matrix_[i][j];
+    }
   }
 }
 
