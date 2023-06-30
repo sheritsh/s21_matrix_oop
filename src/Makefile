@@ -1,4 +1,5 @@
 # /* created by sheritsh // Oleg Polovinko ※ School 21, Kzn */
+
 TARGET = s21_matrix_oop.a
 CC = gcc
 CFLAGS = -Wall -Werror -Wextra -std=c++17 -O3 -lstdc++
