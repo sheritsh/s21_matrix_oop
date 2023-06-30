@@ -21,7 +21,7 @@ $(TARGET): $(OBJECTS)
 	@ar rcs $(TARGET) $(wildcard obj/*.o)
 
 test: $(TARGET)
-	@$(CC) $(CFLAGS) ./tests/*.cc $(TEST_FLAGS) $(TARGET) -o ./tests/$(TEST_TARGET)
+	@g++ $(CFLAGS) ./tests/*.cc $(TEST_FLAGS) $(TARGET) -o ./tests/$(TEST_TARGET)
 	@./tests/$(TEST_TARGET)
 
 style_check:
