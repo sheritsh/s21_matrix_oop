@@ -2,7 +2,7 @@
 TARGET = s21_matrix_oop.a
 CC = gcc
 CFLAGS = -Wall -Werror -Wextra -std=c++17 -O3 -lstdc++
-TEST_FLAGS = -lgtest -pthread -lgmock
+TEST_FLAGS = -lgtest -pthread
 TEST_TARGET = testing_exe
 MODULES = $(wildcard *.cc)
 OBJECTS = $(patsubst %.cc, %.o, $(MODULES))
